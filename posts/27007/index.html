@@ -1,0 +1,314 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Java设计模式-动态代理 | 怒放吧德德</title><meta name="author" content="Liyongde"><meta name="copyright" content="Liyongde"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="动态代理是指客户通过代理类来调用其它对象的方法，并且是在程序运行时根据需要动态创建目标类的代理对象。动态代理就需要建立真实对象和代理对象关系，再去实现代理逻辑方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java设计模式-动态代理">
+<meta property="og:url" content="https://lydandtry.github.io/posts/27007/index.html">
+<meta property="og:site_name" content="怒放吧德德">
+<meta property="og:description" content="动态代理是指客户通过代理类来调用其它对象的方法，并且是在程序运行时根据需要动态创建目标类的代理对象。动态代理就需要建立真实对象和代理对象关系，再去实现代理逻辑方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lydandtry.github.io/img/wtou.jpg">
+<meta property="article:published_time" content="2023-06-24T21:58:34.000Z">
+<meta property="article:modified_time" content="2023-06-24T15:17:20.188Z">
+<meta property="article:author" content="Liyongde">
+<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lydandtry.github.io/img/wtou.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lydandtry.github.io/posts/27007/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Java设计模式-动态代理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-24 15:17:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-blog@2.0.4/css/runtime/runtime.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://cdn.cbd.int/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="怒放吧德德" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/wtou.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="怒放吧德德"><img class="site-icon" src="/img/love.png"/><span class="site-name">怒放吧德德</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Java设计模式-动态代理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-24T21:58:34.000Z" title="发表于 2023-06-24 21:58:34">2023-06-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-24T15:17:20.188Z" title="更新于 2023-06-24 15:17:20">2023-06-24</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">Java设计模式</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Java设计模式-动态代理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="【设计模式】Java设计模式-动态代理"><a href="#【设计模式】Java设计模式-动态代理" class="headerlink" title="【设计模式】Java设计模式 - 动态代理"></a>【设计模式】Java设计模式 - 动态代理</h1><blockquote>
+<p>😄 不断学习才是王道<br>🔥 继续踏上学习之路，学之分享笔记<br>👊 总有一天我也能像各位大佬一样<br>🏆 一个有梦有戏的人 @怒放吧德德<br>🌝最近工作比较忙，没啥时间学习</p>
+</blockquote>
+<h2 id="1、简介"><a href="#1、简介" class="headerlink" title="1、简介"></a>1、简介</h2><p>动态代理是指客户通过代理类来调用其它对象的方法，并且是在程序运行时根据需要动态创建目标类的代理对象。动态代理就需要建立真实对象和代理对象关系，再去实现代理逻辑方法。<br><strong>Java</strong>中实现动态代理有许多方法，<strong>JDK、CGLIB、Javassist、ASM</strong>，常用的是<strong>JDK</strong>和<strong>CGLIB</strong>，在<strong>spring</strong>中就是使用了这两种，然而<strong>mybatis</strong>还是用了<strong>Javassist</strong>。</p>
+<h2 id="2、JDK动态代理"><a href="#2、JDK动态代理" class="headerlink" title="2、JDK动态代理"></a>2、JDK动态代理</h2><p>提供简单的接口类以及其实现类，在通过建立真是对象与代理对象的关系，并且实现代理逻辑。</p>
+<h3 id="1-、准备接口类"><a href="#1-、准备接口类" class="headerlink" title="(1)、准备接口类"></a>(1)、准备接口类</h3><p>先提供接口类：<br>HelloWorldService：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lyd.demo.service;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: lyd</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 普通的接口</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2022-08-17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HelloWorldService</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHelloWorld</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>HelloWorldServiceImpl：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lyd.demo.service.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.lyd.demo.service.HelloWorldService;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: lyd</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 接口实现类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2022-08-17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorldServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">HelloWorldService</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHelloWorld</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-、jdk动态代理"><a href="#2-、jdk动态代理" class="headerlink" title="(2)、jdk动态代理"></a>(2)、jdk动态代理</h3><p>在JDK动态代理中，通过bind将真实对象和代理对象绑定起来，实现代理逻辑就要去实现<strong>java.lang.reflect.InvocationHandler</strong>接口，并且去实现invoke方法</p>
+<blockquote>
+<p>①、首先需要声明 bind 方法去建立真实对象与代理对象的关系，把本类中的target保存真实对象。在通过Proxy的newProxyInstance方法来建立并生成对象，target.getClass().getClassLoader()：target本身的类加载器，target.getClass().getInterfaces()：把生成的动态代理对象下挂在接口中，this：当前对象，是定义实现方法逻辑的代理类。<br>②、实现InvocationHandler类中的invoke方法，可以实现代理逻辑，当我们使用了代理对象调度方法后就会进入到invoke方法中。</p>
+</blockquote>
+<p>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lyd.demo.jdk;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: lyd</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 动态代理绑定和代理逻辑实现</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2022-08-17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdkProxyExample</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 真实对象</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">Object</span> <span class="variable">target</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 建立代理对象和真实对象的代理关系，并且返回代理逻辑实现</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> target 真实对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 代理对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">bind</span><span class="params">(Object target)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.target = target; <span class="comment">// 绑定对象</span></span><br><span class="line">        <span class="keyword">return</span> Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(), <span class="built_in">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 代理方法逻辑</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> proxy 代理对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> method 当前调度方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args 当前方法的参数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>  代理结果返回</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Throwable 异常</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;进入代理逻辑方法&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;在调度真实对象之前的服务&quot;</span>);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> method.invoke(target, args); <span class="comment">// 相当于调用了sayHelloWorld的方法</span></span><br><span class="line">        System.out.println(<span class="string">&quot;在调度真实对象之后的服务&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-、实例"><a href="#3-、实例" class="headerlink" title="(3)、实例"></a>(3)、实例</h3><p>测试jdk动态代理<br>通过 <strong>HelloWorldService proxy = (HelloWorldService) jdkProxyExample.bind(new HelloWorldServiceImpl());</strong> 去代理对象，然后就是使用proxy去点接口里面的方法了。<br>代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lyd.demo.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.lyd.demo.jdk.JdkProxyExample;</span><br><span class="line"><span class="keyword">import</span> com.lyd.demo.service.HelloWorldService;</span><br><span class="line"><span class="keyword">import</span> com.lyd.demo.service.impl.HelloWorldServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: lyd</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 测试jdk动态代理</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2022-08-17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">jdkProxyText</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">JdkProxyExample</span> <span class="variable">jdkProxyExample</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JdkProxyExample</span>();</span><br><span class="line">        <span class="comment">// 绑定关系，因为挂载带接口下，因此声明一个代理对象</span></span><br><span class="line">        <span class="type">HelloWorldService</span> <span class="variable">proxy</span> <span class="operator">=</span> (HelloWorldService) jdkProxyExample.bind(<span class="keyword">new</span> <span class="title class_">HelloWorldServiceImpl</span>()); <span class="comment">// 对象是new 实现类</span></span><br><span class="line">        <span class="comment">// 调用方法</span></span><br><span class="line">        proxy.sayHelloWorld();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实验结果<br><img src="https://img-blog.csdnimg.cn/13501d3d09a649d7bf147badf00c75b2.png" alt="在这里插入图片描述"><br>可以带入参数：以下是带入参数的例子</p>
+<blockquote>
+<p>在接口中的方法添加参数</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHelloWorld</span><span class="params">(String name)</span>;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在实现类的实现方法中打印出来</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">&quot;Hello World! &quot;</span> + name);</span><br></pre></td></tr></table></figure>
+<p>调用方法的时候添加参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调用方法</span></span><br><span class="line">proxy.sayHelloWorld(<span class="string">&quot;lyd&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>代理模式十分重要，要理解里面的逻辑，可以通过debug打断点去一步一步查看。</p>
+<h2 id="3、CGLIB-动态代理"><a href="#3、CGLIB-动态代理" class="headerlink" title="3、CGLIB 动态代理"></a>3、CGLIB 动态代理</h2><p>JDK动态代理需要接口才能完成，而如果不提供接口，只有实现的方法类，可以使用三方插件CGLIB来动态代理，采用这个动态代理技术，需要引入三方jar包，可以搭建maven项目，引入CGLIB <strong>jar包</strong> ，通过maven官网搜索添加，亦可以直接下载jar文件。</p>
+<h3 id="1-、加入CGLIB依赖"><a href="#1-、加入CGLIB依赖" class="headerlink" title="(1)、加入CGLIB依赖"></a>(1)、加入CGLIB依赖</h3><p>maven引入依赖：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/cglib/cglib --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cglib<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cglib<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.3.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-、准备实现类"><a href="#2-、准备实现类" class="headerlink" title="(2)、准备实现类"></a>(2)、准备实现类</h3><p>准备一个实现类，cglib不需要接口，只要实现就可以：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lyd.demo.impl;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: lyd</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 实现类</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2022-08-17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorldServiceImpl</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sayHelloWorld</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello World! &quot;</span> + name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="3-、代理类"><a href="#3-、代理类" class="headerlink" title="(3)、代理类"></a>(3)、代理类</h3><p>代理类需要<strong>MethodInterceptor</strong>去实现方法</p>
+<blockquote>
+<p>这里使用了增强者enhancer，通过设置超类和使用setCallback方法设置代理类，CGLIB是通过invokeSuper方法代理逻辑的。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lyd.demo.cglib;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.Enhancer;</span><br><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.MethodInterceptor;</span><br><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.MethodProxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: lyd</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>:</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2022-08-17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CglibProxyExample</span> <span class="keyword">implements</span> <span class="title class_">MethodInterceptor</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成CGLIB对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cls -----对象类</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Class的CGLIB代理对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">getProxy</span><span class="params">(Class cls)</span> &#123;</span><br><span class="line">        <span class="comment">//CGLIB的增强类对象</span></span><br><span class="line">        <span class="type">Enhancer</span> <span class="variable">enhancer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Enhancer</span>();</span><br><span class="line">        <span class="comment">//设置增强对象</span></span><br><span class="line">        enhancer.setSuperclass(cls);</span><br><span class="line">        <span class="comment">//定义代理逻辑对象为当前对象，要求对象实现MethodInterceptor方法</span></span><br><span class="line">        enhancer.setCallback(<span class="built_in">this</span>);</span><br><span class="line">        <span class="comment">//生成返回代理对象</span></span><br><span class="line">        <span class="keyword">return</span>  enhancer.create();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 代理逻辑方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> proxy 代理对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> method 方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args 参数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> methodProxy 方法代理</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 代理逻辑返回</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Throwable 异常处理</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">intercept</span><span class="params">(Object proxy, Method method, Object[] args, MethodProxy methodProxy)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;调用对象之前&quot;</span>);</span><br><span class="line">        <span class="comment">//使用CGLIB反射真实对象的方法</span></span><br><span class="line">        <span class="type">Object</span> <span class="variable">result</span> <span class="operator">=</span> methodProxy.invokeSuper(proxy, args);</span><br><span class="line">        System.out.println(<span class="string">&quot;调用对象之后&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-、实例"><a href="#4-、实例" class="headerlink" title="(4)、实例"></a>(4)、实例</h3><p>测试：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.lyd.demo.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.lyd.demo.cglib.CglibProxyExample;</span><br><span class="line"><span class="keyword">import</span> com.lyd.demo.impl.HelloWorldServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span>: lyd</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span>: 测试CGLIB</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span>: 2022-08-17</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CGLIBProxyTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">CglibProxyExample</span> <span class="variable">cglibProxyExample</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CglibProxyExample</span>();</span><br><span class="line">        <span class="type">HelloWorldServiceImpl</span> <span class="variable">proxy</span> <span class="operator">=</span> (HelloWorldServiceImpl) cglibProxyExample.getProxy(HelloWorldServiceImpl.class); <span class="comment">// 获取对象,可以不需要接口类</span></span><br><span class="line">        proxy.sayHelloWorld(<span class="string">&quot;lyd&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>结果<br><img src="https://img-blog.csdnimg.cn/750d26e40ae0495d8890d2facf5f41c7.png" alt="在这里插入图片描述"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://lydandtry.github.io">Liyongde</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://lydandtry.github.io/posts/27007/">https://lydandtry.github.io/posts/27007/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://lydandtry.github.io" target="_blank">怒放吧德德</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a><a class="post-meta__tags" href="/tags/Java/">Java</a></div><div class="post_share"></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/33900/" title="Java设计模式-责任链模式"><img class="cover" src="https://img1.imgtp.com/2023/06/18/Fn2ZVr6p.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Java设计模式-责任链模式</div></div></a></div><div class="next-post pull-right"><a href="/posts/25987/" title="Java设计模式-反射机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Java设计模式-反射机制</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/25987/" title="Java设计模式-反射机制"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-24</div><div class="title">Java设计模式-反射机制</div></div></a></div><div><a href="/posts/60745/" title="Java设计模式-工厂模式"><img class="cover" src="https://s2.loli.net/2023/06/24/NvyYbZO1en2Jqug.webp" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-24</div><div class="title">Java设计模式-工厂模式</div></div></a></div><div><a href="/posts/33900/" title="Java设计模式-责任链模式"><img class="cover" src="https://img1.imgtp.com/2023/06/18/Fn2ZVr6p.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-24</div><div class="title">Java设计模式-责任链模式</div></div></a></div></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="waline-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/wtou.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Liyongde</div><div class="author-info__description">一个深爱学习技术的程序员</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">5</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lydAndtry"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/lydAndtry" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:liyongde663@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%90%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E3%80%91Java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">1.</span> <span class="toc-text">【设计模式】Java设计模式 - 动态代理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E7%AE%80%E4%BB%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1、简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81JDK%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">2、JDK动态代理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E3%80%81%E5%87%86%E5%A4%87%E6%8E%A5%E5%8F%A3%E7%B1%BB"><span class="toc-number">1.2.1.</span> <span class="toc-text">(1)、准备接口类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E3%80%81jdk%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">1.2.2.</span> <span class="toc-text">(2)、jdk动态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E3%80%81%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.2.3.</span> <span class="toc-text">(3)、实例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81CGLIB-%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">3、CGLIB 动态代理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E3%80%81%E5%8A%A0%E5%85%A5CGLIB%E4%BE%9D%E8%B5%96"><span class="toc-number">1.3.1.</span> <span class="toc-text">(1)、加入CGLIB依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E3%80%81%E5%87%86%E5%A4%87%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="toc-number">1.3.2.</span> <span class="toc-text">(2)、准备实现类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E3%80%81%E4%BB%A3%E7%90%86%E7%B1%BB"><span class="toc-number">1.3.3.</span> <span class="toc-text">(3)、代理类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E3%80%81%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.3.4.</span> <span class="toc-text">(4)、实例</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/60745/" title="Java设计模式-工厂模式"><img src="https://s2.loli.net/2023/06/24/NvyYbZO1en2Jqug.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java设计模式-工厂模式"/></a><div class="content"><a class="title" href="/posts/60745/" title="Java设计模式-工厂模式">Java设计模式-工厂模式</a><time datetime="2023-06-24T23:04:41.000Z" title="发表于 2023-06-24 23:04:41">2023-06-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/33900/" title="Java设计模式-责任链模式"><img src="https://img1.imgtp.com/2023/06/18/Fn2ZVr6p.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Java设计模式-责任链模式"/></a><div class="content"><a class="title" href="/posts/33900/" title="Java设计模式-责任链模式">Java设计模式-责任链模式</a><time datetime="2023-06-24T22:39:25.000Z" title="发表于 2023-06-24 22:39:25">2023-06-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/27007/" title="Java设计模式-动态代理">Java设计模式-动态代理</a><time datetime="2023-06-24T21:58:34.000Z" title="发表于 2023-06-24 21:58:34">2023-06-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/25987/" title="Java设计模式-反射机制">Java设计模式-反射机制</a><time datetime="2023-06-24T15:02:06.000Z" title="发表于 2023-06-24 15:02:06">2023-06-24</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/posts/53870/" title="锁的机制与底层优化原理">锁的机制与底层优化原理</a><time datetime="2023-06-19T20:13:33.000Z" title="发表于 2023-06-19 20:13:33">2023-06-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By Liyongde</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>function loadWaline () {
+  function initWaline () {
+    const waline = Waline.init(Object.assign({
+      el: '#waline-wrap',
+      serverURL: 'https://waline-repo-hlglih461-lydandtry.vercel.app',
+      pageview: false,
+      dark: 'html[data-theme="dark"]',
+      path: window.location.pathname,
+      comment: false,
+    }, null))
+  }
+
+  if (typeof Waline === 'object') initWaline()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/@waline/client/dist/waline.min.css').then(() => {
+      getScript('https://cdn.jsdelivr.net/npm/@waline/client/dist/waline.min.js').then(initWaline)
+    })
+  }
+}
+
+if ('Waline' === 'Waline' || !true) {
+  if (true) btf.loadComment(document.getElementById('waline-wrap'),loadWaline)
+  else setTimeout(loadWaline, 0)
+} else {
+  function loadOtherComment () {
+    loadWaline()
+  }
+}</script></div><div class="aplayer no-destroy" data-id="8406234811" data-server="netease" data-type="playlist" data-order="list" data-fixed="true" data-preload="auto" data-autoplay="false" data-mutex="true" ></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/metingjs/dist/Meting.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_footer_beautify_injector_config(){
+    var parent_div_git = document.getElementById('footer-wrap');
+    var item_html = '<div id="workboard"></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v5.4.0" title=""><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&amp;logo=hexo" alt=""/></a><a class="github-badge" target="_blank" href="https://butterfly.js.org/" style="margin-inline:5px" data-title="主题版本Butterfly_v4.9.0" title=""><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&amp;logo=bitdefender" alt=""/></a><a class="github-badge" target="_blank" href="https://www.jsdelivr.com/" style="margin-inline:5px" data-title="本站使用JsDelivr为静态资源提供CDN加速" title=""><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&amp;logo=jsDelivr" alt=""/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管" title=""><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&amp;logo=GitHub" alt=""/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title=""><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&amp;logo=Claris" alt=""/></a></p>';
+    console.log('已挂载butterfly_footer_beautify')
+    parent_div_git.insertAdjacentHTML("beforeend",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_footer_beautify_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_footer_beautify_injector_config();
+  }
+  </script><script async src="/js/runtime.js"></script><script async src="/js/ali-iconfont.js"></script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '1.5s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('flink-list-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__flipInY');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('flink-list-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__animated');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('article-sort-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__slideInRight');
+    arr[i].setAttribute('data-wow-duration', '1.5s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('site-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__flipInY');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script><script async="async">var arr = document.getElementsByClassName('site-card');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__animated');
+    arr[i].setAttribute('data-wow-duration', '3s');
+    arr[i].setAttribute('data-wow-delay', '');
+    arr[i].setAttribute('data-wow-offset', '');
+    arr[i].setAttribute('data-wow-iteration', '');
+  }</script></div><script defer src="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://cdn.cbd.int/hexo-butterfly-wowjs/lib/wow_init.js"></script><!-- hexo injector body_end end --></body></html>
